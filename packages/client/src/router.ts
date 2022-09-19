@@ -1,6 +1,6 @@
 import { AsyncComponentLoader, defineAsyncComponent, inject } from 'vue';
 import { Router } from '@/nirax';
-import { $i, iAmModerator } from '@/account';
+import { $i, iAmEmojiAdmin, iAmModerator } from '@/account';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
 import { ui } from '@/config';
@@ -376,7 +376,11 @@ export const routes = [{
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
 	}],
-}, {
+},{
+	path: '/emoji-manage',
+	component: iAmModerator || iAmEmojiAdmin ? page(() => import('./pages/admin/emojis.vue')) : page(() => import('./pages/not-found.vue')),
+	loginRequired: true,
+},{
 	path: '/my/notifications',
 	component: page(() => import('./pages/notifications.vue')),
 	loginRequired: true,

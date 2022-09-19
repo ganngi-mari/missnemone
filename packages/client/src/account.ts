@@ -18,6 +18,7 @@ export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : n
 
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
 export const iAmAdmin = $i != null && $i.isAdmin;
+export const iAmEmojiAdmin = $i != null && $i.isEmojiAdmin;
 
 export async function signout() {
 	waiting();
