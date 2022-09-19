@@ -41,6 +41,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		return {
 			isModerator: user.isModerator,
 			isAdmin: user.isAdmin,
+			isEmojiAdmin: user.isEmojiAdmin,
 			isSilenced: user.isSilenced,
 			isSuspended: user.isSuspended,
 		};
@@ -69,6 +70,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		mutingNotificationTypes: profile.mutingNotificationTypes,
 		isModerator: user.isModerator,
 		isAdmin: user.isAdmin,
+		isEmojiAdmin: user.isEmojiAdmin,
 		isSilenced: user.isSilenced,
 		isSuspended: user.isSuspended,
 		lastActiveDate: user.lastActiveDate,
