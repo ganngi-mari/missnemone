@@ -376,13 +376,11 @@ export const routes = [{
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
 	}],
-},
-// },{
-// 	path: '/emoji-manage',
-// 	component: iAmModerator || iAmEmojiAdmin ? page(() => import('./pages/admin/emojis.vue')) : page(() => import('./pages/not-found.vue')),
-// 	loginRequired: true,
-// },{
-{
+},{
+	path: '/emoji-manage',
+	component: iAmEmojiAdmin ? page(() => import('./pages/admin/emojis.vue')) : page(() => import('./pages/not-found.vue')),
+	loginRequired: true,
+},{
 	path: '/my/notifications',
 	component: page(() => import('./pages/notifications.vue')),
 	loginRequired: true,
