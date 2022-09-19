@@ -670,6 +670,11 @@ export interface IEndpointMeta {
 	readonly requireModerator?: boolean;
 
 	/**
+	 * 絵文字管理者によるエンドポイントの利用可否(r-ca, test)
+	 */
+	readonly allowEmojiAdmin?: boolean;
+
+	/**
 	 * エンドポイントのリミテーションに関するやつ
 	 * 省略した場合はリミテーションは無いものとして解釈されます。
 	 */

@@ -6,6 +6,7 @@ export const meta = {
 	secure: true,
 	requireCredential: true,
 	requireModerator: true,
+	allowEmojiAdmin: true,
 } as const;
 
 export const paramDef = {
