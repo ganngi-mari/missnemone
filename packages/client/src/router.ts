@@ -295,7 +295,7 @@ export const routes = [{
 	component: iAmModerator ? page(() => import('./pages/admin-file.vue')) : page(() => import('./pages/not-found.vue')),
 }, {
 	path: '/admin',
-	component: iAmModerator || iAmEmojiAdmin ? page(() => import('./pages/admin/index.vue')) : page(() => import('./pages/not-found.vue')),
+	component: iAmEmojiAdmin ? page(() => import('./pages/admin/index.vue')) : page(() => import('./pages/not-found.vue')),
 	children: [{
 		path: '/overview',
 		name: 'overview',
