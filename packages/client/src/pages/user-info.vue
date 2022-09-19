@@ -87,7 +87,7 @@
 			<div v-else-if="tab === 'moderation'" class="_formRoot">
 				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
 				<FormSwitch v-if="user.host == null && $i.isAdmin && (admin || !user.isModerator)" v-model="admin" class="_formBlock" @update:modelValue="toggleAdmin">{{ i18n.ts.administrator }}</FormSwitch>
-				<FormSwitch v-model="emojiadmin" class="_formBlock" @update:modelValue="toggleEmojiAdmin">{{ i18n.ts.silence }}</FormSwitch>
+				<FormSwitch v-model="emojiadmin" class="_formBlock" @update:modelValue="toggleEmojiAdmin">{{ "EmojiAdmin(仮置きテキスト)" }}</FormSwitch>
 				<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
 				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
