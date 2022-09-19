@@ -148,6 +148,13 @@ export class User {
 	})
 	public isModerator: boolean;
 
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether the User is a emojiAdmin.(r-ca, test)'
+	})
+	public isEmojiAdmin: boolean;
+
+
 	@Index()
 	@Column('boolean', {
 		default: true,

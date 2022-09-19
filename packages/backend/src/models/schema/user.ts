@@ -47,6 +47,11 @@ export const packedUserLiteSchema = {
 			nullable: false, optional: true,
 			default: false,
 		},
+		isEmojiAdmin:{
+			type: 'boolean',
+			nullable: false, optional: true,
+			default: false,
+		},
 		isBot: {
 			type: 'boolean',
 			nullable: false, optional: true,

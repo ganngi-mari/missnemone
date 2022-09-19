@@ -23,6 +23,7 @@ export interface InternalStreamTypes {
 	userChangeSilencedState: { id: User['id']; isSilenced: User['isSilenced']; };
 	userChangeModeratorState: { id: User['id']; isModerator: User['isModerator']; };
 	userChangeAdminState: { id: User['id']; isAdmin: User['isAdmin']; };
+	userChangeEmojiAdminState: { id: User['id']; isEmojiAdmin: User['isEmojiAdmin']; };
 	userTokenRegenerated: { id: User['id']; oldToken: User['token']; newToken: User['token']; };
 	remoteUserUpdated: { id: User['id']; };
 	webhookCreated: Webhook;
