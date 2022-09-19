@@ -295,7 +295,7 @@ export const routes = [{
 	component: iAmModerator ? page(() => import('./pages/admin-file.vue')) : page(() => import('./pages/not-found.vue')),
 }, {
 	path: '/admin',
-	component: iAmModerator ? page(() => import('./pages/admin/index.vue')) : page(() => import('./pages/not-found.vue')),
+	component: iAmModerator || iAmEmojiAdmin ? page(() => import('./pages/admin/index.vue')) : page(() => import('./pages/not-found.vue')),
 	children: [{
 		path: '/overview',
 		name: 'overview',
@@ -376,11 +376,13 @@ export const routes = [{
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
 	}],
-},{
-	path: '/emoji-manage',
-	component: iAmModerator || iAmEmojiAdmin ? page(() => import('./pages/admin/emojis.vue')) : page(() => import('./pages/not-found.vue')),
-	loginRequired: true,
-},{
+},
+// },{
+// 	path: '/emoji-manage',
+// 	component: iAmModerator || iAmEmojiAdmin ? page(() => import('./pages/admin/emojis.vue')) : page(() => import('./pages/not-found.vue')),
+// 	loginRequired: true,
+// },{
+{
 	path: '/my/notifications',
 	component: page(() => import('./pages/notifications.vue')),
 	loginRequired: true,
