@@ -29,7 +29,7 @@ import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { stream } from '@/stream';
 import FormSection from '@/components/form/section.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
