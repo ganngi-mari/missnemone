@@ -36,8 +36,8 @@ import { i18n } from '@/i18n';
 import { quickAccessDef } from '@/navbar';
 import { deviceKind } from '@/scripts/device-kind';
 import { MenuItem } from '@/types/menu';
-import MkModal from '@/components/ui/modal.vue';
-import MkMenu from '@/components/ui/menu.vue';
+import MkModal from '@/components/MkModal.vue';
+import MkMenu from '@/components/MkMenu.vue';
 import { $i, getAccounts, login } from '@/account';
 
 const props = withDefaults(defineProps<{
