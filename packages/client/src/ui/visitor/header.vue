@@ -4,8 +4,8 @@
 		<div class="content">
 			<MkA to="/" class="link" active-class="active"><i class="fas fa-home icon"></i>{{ $ts.home }}</MkA>
 			<MkA to="/explore" class="link" active-class="active"><i class="fas fa-hashtag icon"></i>{{ $ts.explore }}</MkA>
-			<MkA to="/featured" class="link" active-class="active"><i class="fas fa-fire-alt icon"></i>{{ $ts.featured }}</MkA>
 			<MkA to="/channels" class="link" active-class="active"><i class="fas fa-satellite-dish icon"></i>{{ $ts.channel }}</MkA>
+			<MkA to="/announcements" class="link" active-class="active"><i class="fas fa-broadcast-tower icon"></i>{{ $ts.announcements }}</MkA>
 			<div v-if="info" class="page active link">
 				<div class="title">
 					<i v-if="info.icon" class="icon" :class="info.icon"></i>
@@ -41,8 +41,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
+import XSigninDialog from '@/components/MkSigninDialog.vue';
+import XSignupDialog from '@/components/MkSignupDialog.vue';
 import * as os from '@/os';
 import { search } from '@/scripts/search';
 

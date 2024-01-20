@@ -7,10 +7,10 @@
 		<MkSelect v-model="src" class="_formBlock">
 			<template #label>{{ i18n.ts.antennaSource }}</template>
 			<option value="all">{{ i18n.ts._antennaSources.all }}</option>
-			<!--<option value="home">{{ i18n.ts._antennaSources.homeTimeline }}</option>-->
+			<option value="home">{{ i18n.ts._antennaSources.homeTimeline }}</option>
 			<option value="users">{{ i18n.ts._antennaSources.users }}</option>
-			<!--<option value="list">{{ i18n.ts._antennaSources.userList }}</option>-->
-			<!--<option value="group">{{ i18n.ts._antennaSources.userGroup }}</option>-->
+			<option value="list">{{ i18n.ts._antennaSources.userList }}</option>
+			<option value="group">{{ i18n.ts._antennaSources.userGroup }}</option>
 		</MkSelect>
 		<MkSelect v-if="src === 'list'" v-model="userListId" class="_formBlock">
 			<template #label>{{ i18n.ts.userList }}</template>
@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkSelect from '@/components/form/select.vue';

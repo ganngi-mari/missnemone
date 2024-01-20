@@ -10,6 +10,9 @@
 			<template #default="{items}">
 				<FormLink v-for="mute in items" :key="mute.id" :to="userPage(mute.mutee)">
 					<MkAcct :user="mute.mutee"/>
+					<div v-if="mute.expiresAt" class="clock-container">
+						<i class="fas fa-hourglass"></i><MkTime :time="mute.expiresAt" mode="detail"/>
+					</div>
 				</FormLink>
 			</template>
 		</MkPagination>
@@ -29,9 +32,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkTab from '@/components/tab.vue';
-import FormInfo from '@/components/ui/info.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkTab from '@/components/MkTab.vue';
+import FormInfo from '@/components/MkInfo.vue';
 import FormLink from '@/components/form/link.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
@@ -59,3 +62,11 @@ definePageMetadata({
 	icon: 'fas fa-ban',
 });
 </script>
+
+<style>
+.clock-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+</style>

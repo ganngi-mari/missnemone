@@ -29,7 +29,7 @@
 			</main>
 			<div class="powered-by">
 				<b><MkA to="/">{{ host }}</MkA></b>
-				<small>Powered by <a href="https://github.com/misskey-dev/misskey" target="_blank">Misskey</a></small>
+				<small>Powered by <a href="https://github.com/atsu1125/misskey-v12" target="_blank">Misskey</a></small>
 			</div>
 		</div>
 	</div>
@@ -42,8 +42,8 @@ import XHeader from './header.vue';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
 import { ColdDeviceStorage } from '@/store';
 import { mainRouter } from '@/router';
 
@@ -147,7 +147,7 @@ export default defineComponent({
 			* {
 				color: #fff;
 			}
-					
+
 			> h1 {
 				margin: 0;
 				padding: 96px 32px 0 32px;
@@ -169,7 +169,7 @@ export default defineComponent({
 
 			> .action {
 				padding-bottom: 64px;
-				
+
 				> button {
 					display: inline-block;
 					padding: 10px 20px;
@@ -210,9 +210,9 @@ export default defineComponent({
 			}
 
 			> header {
-				
+
 			}
-					
+
 			> h1 {
 				margin: 0;
 				padding: 32px;

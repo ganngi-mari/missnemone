@@ -25,6 +25,7 @@
 							<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="fas fa-retweet fa-fw"></i></button>
 							<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="fas fa-share-alt fa-fw"></i></button>
 						</div>
+						<MkButton v-if="$i && ($i.id != page.user.id && ($i.isModerator || $i.isAdmin) && enableSudo)" v-tooltip="i18n.ts.deleteAsAdmin" class="button" danger @click="del()"><i class="fas fa-trash-alt"></i></MkButton>
 					</div>
 					<div class="user">
 						<MkAvatar :user="page.user" class="avatar"/>
@@ -65,16 +66,18 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import XPage from '@/components/page/page.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { url } from '@/config';
-import MkFollowButton from '@/components/follow-button.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkPagePreview from '@/components/page-preview.vue';
+import MkFollowButton from '@/components/MkFollowButton.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { defaultStore } from '@/store';
 
+const enableSudo = defaultStore.state.enableSudo;
 const props = defineProps<{
 	pageName: string;
 	username: string;
@@ -137,6 +140,19 @@ async function unlike() {
 	}).then(() => {
 		page.isLiked = false;
 		page.likedCount--;
+	});
+}
+
+async function del() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.noteDeleteAsAdminConfirm,
+	});
+	if (confirm.canceled) return;
+	os.apiWithDialog('pages/delete', {
+		pageId: page.id,
+	}).then(() => {
+		router.push('/pages');
 	});
 }
 

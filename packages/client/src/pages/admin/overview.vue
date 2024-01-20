@@ -19,6 +19,12 @@
 							<MkNumberDiff v-if="notesComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
 						</div>
 					</div>
+					<div class="number _panel">
+						<div class="label">Current Online Users</div>
+						<div class="value _monospace">
+							{{ number(onlineUsersCount) }}
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -112,7 +118,7 @@
 				<div class="body">
 					<MkTagCloud v-if="activeInstances">
 						<li v-for="instance in activeInstances">
-							<a @click.prevent="onInstanceClick(instance)">
+							<a v-if="instance.iconUrl" @click.prevent="onInstanceClick(instance)">
 								<img style="width: 32px;" :src="instance.iconUrl">
 							</a>
 						</li>
@@ -165,8 +171,8 @@ import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
 import XUser from './overview.user.vue';
 import XPie from './overview.pie.vue';
-import MkNumberDiff from '@/components/number-diff.vue';
-import MkTagCloud from '@/components/tag-cloud.vue';
+import MkNumberDiff from '@/components/MkNumberDiff.vue';
+import MkTagCloud from '@/components/MkTagCloud.vue';
 import { version, url } from '@/config';
 import number from '@/filters/number';
 import * as os from '@/os';
@@ -176,7 +182,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
+import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 
 Chart.register(
 	ArcElement,
@@ -199,6 +205,7 @@ Chart.register(
 const rootEl = $ref<HTMLElement>();
 const chartEl = $ref<HTMLCanvasElement>(null);
 let stats: any = $ref(null);
+let onlineUsersCount = $ref();
 let serverInfo: any = $ref(null);
 let topSubInstancesForPie: any = $ref(null);
 let topPubInstancesForPie: any = $ref(null);
@@ -403,6 +410,10 @@ onMounted(async () => {
 		os.apiGet('charts/notes', { limit: 2, span: 'day' }).then(chart => {
 			notesComparedToThePrevDay = stats.originalNotesCount - chart.local.total[1];
 		});
+	});
+
+	os.api('get-online-users-count').then(res => {
+		onlineUsersCount = res.count;
 	});
 
 	os.apiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {

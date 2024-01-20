@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -46,14 +46,20 @@ async function addRelay() {
 }
 
 function remove(inbox: string) {
-	os.api('admin/relays/remove', {
-		inbox,
-	}).then(() => {
-		refresh();
-	}).catch((err: any) => {
-		os.alert({
-			type: 'error',
-			text: err.message || err,
+	os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: inbox }),
+	}).then(({ canceled }) => {
+		if (canceled) return;
+		os.api('admin/relays/remove', {
+			inbox,
+		}).then(() => {
+			refresh();
+		}).catch((err: any) => {
+			os.alert({
+				type: 'error',
+				text: err.message || err,
+			});
 		});
 	});
 }

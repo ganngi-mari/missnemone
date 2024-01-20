@@ -36,13 +36,13 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: string | number;
-	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search';
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;

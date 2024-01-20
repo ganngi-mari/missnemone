@@ -11,12 +11,13 @@ import { Cache } from '@/misc/cache.js';
 import { db } from '@/db/postgre.js';
 import { Instance } from '../entities/instance.js';
 import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances, DriveFiles } from '../index.js';
+import { sanitizeUrl } from '@/misc/sanitize-url.js';
 
 const userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
-	Detailed extends true ? 
+	Detailed extends true ?
 		ExpectsMe extends true ? Packed<'MeDetailed'> :
 		ExpectsMe extends false ? Packed<'UserDetailedNotMe'> :
 		Packed<'UserDetailed'> :
@@ -295,7 +296,7 @@ export const UserRepository = db.getRepository(User).extend({
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			avatarUrl: this.getAvatarUrlSync(user),
+			avatarUrl: sanitizeUrl(this.getAvatarUrlSync(user)),
 			avatarBlurhash: user.avatar?.blurhash || null,
 			avatarColor: null, // 後方互換性のため
 			isAdmin: user.isAdmin || falsy,
@@ -309,8 +310,8 @@ export const UserRepository = db.getRepository(User).extend({
 				name: instance.name,
 				softwareName: instance.softwareName,
 				softwareVersion: instance.softwareVersion,
-				iconUrl: instance.iconUrl,
-				faviconUrl: instance.faviconUrl,
+				iconUrl: sanitizeUrl(instance.iconUrl),
+				faviconUrl: sanitizeUrl(instance.faviconUrl),
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
 			emojis: populateEmojis(user.emojis, user.host),
@@ -318,12 +319,12 @@ export const UserRepository = db.getRepository(User).extend({
 			driveCapacityOverrideMb: user.driveCapacityOverrideMb,
 
 			...(opts.detail ? {
-				url: profile!.url,
-				uri: user.uri,
+				url: sanitizeUrl(profile!.url),
+				uri: sanitizeUrl(user.uri),
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
-				bannerUrl: user.banner ? DriveFiles.getPublicUrl(user.banner, false) : null,
+				bannerUrl: user.banner ?  sanitizeUrl(DriveFiles.getPublicUrl(user.banner, false)) : null,
 				bannerBlurhash: user.banner?.blurhash || null,
 				bannerColor: null, // 後方互換性のため
 				isLocked: user.isLocked,
@@ -366,6 +367,7 @@ export const UserRepository = db.getRepository(User).extend({
 				noCrawle: profile!.noCrawle,
 				isExplorable: user.isExplorable,
 				isDeleted: user.isDeleted,
+				twoFactorBackupCodesStock: profile?.twoFactorBackupSecret?.length === 5 ? 'full' : (profile?.twoFactorBackupSecret?.length ?? 0) > 0 ? 'partial' : 'none',
 				hideOnlineStatus: user.hideOnlineStatus,
 				hasUnreadSpecifiedNotes: NoteUnreads.count({
 					where: { userId: user.id, isSpecified: true },

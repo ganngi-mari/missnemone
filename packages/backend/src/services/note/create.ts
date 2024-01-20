@@ -80,15 +80,19 @@ class NotificationManager {
 
 	public async deliver() {
 		for (const x of this.queue) {
-			// ミュート情報を取得
+			// ミュートとブロック情報を取得
 			const mentioneeMutes = await Mutings.findBy({
 				muterId: x.target,
 			});
+			const mentioneeBlocks = await Blockings.findBy({
+				blockerId: x.target,
+			});
 
 			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId);
+			const mentioneesBlockedUserIds = mentioneeBlocks.map(m => m.blockeeId);
 
-			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
+			// 通知される側のユーザーが通知する側のユーザーをミュートかブロックしていない限りは通知する
+			if ((!mentioneesMutedUserIds.includes(this.notifier.id)) && (!mentioneesBlockedUserIds.includes(this.notifier.id))) {
 				createNotification(x.target, x.reason, {
 					notifierId: this.notifier.id,
 					noteId: this.note.id,
@@ -155,19 +159,43 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		data.visibility = 'home';
 	}
 
-	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
-	if (data.renote && data.renote.visibility !== 'public' && data.renote.visibility !== 'home' && data.renote.userId !== user.id) {
-		return rej('Renote target is not public or home');
-	}
+	// Renote Visibility Check
+	if (data.renote) {
+		switch (data.renote.visibility) {
+			case 'public':
+				// public noteは無条件にrenote可能
+				break;
+			case 'home':
+				// home noteはhome以下にrenote可能
+				if (data.visibility === 'public') {
+					data.visibility = 'home';
+				}
+				break;
+			case 'followers':
+				// 他人のfollowers noteはreject
+				if (data.renote.userId !== user.id) {
+					throw new Error('Renote target is not public or home');
+				}
+				// Renote対象がfollowersならfollowersにする
+				data.visibility = 'followers';
+				break;
+			case 'specified':
+				// specified / direct noteはreject
+				throw new Error('Renote target is not public or home');
+		}
 
-	// Renote対象がpublicではないならhomeにする
-	if (data.renote && data.renote.visibility !== 'public' && data.visibility === 'public') {
-		data.visibility = 'home';
-	}
-
-	// Renote対象がfollowersならfollowersにする
-	if (data.renote && data.renote.visibility === 'followers') {
-		data.visibility = 'followers';
+		// Check blocking
+		if (data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length === 0)) {
+			if (data.renote.userId !== user.id) {
+				const block = await Blockings.findOneBy({
+					blockerId: data.renote.userId,
+					blockeeId: user.id,
+				});
+				if (block) {
+					throw new Error('blocked');
+				}
+			}
+		}
 	}
 
 	// 返信対象がpublicではないならhomeにする
@@ -278,12 +306,23 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	});
 
 	// Antenna
-	for (const antenna of (await getAntennas())) {
-		checkHitAntenna(antenna, note, user).then(hit => {
-			if (hit) {
-				addNoteToAntenna(antenna, note, user);
-			}
-		});
+	 // TODO: キャッシュしたい
+	if (!config.disableAntenna) {
+		Followings.createQueryBuilder('following')
+			.andWhere(`following.followeeId = :userId`, { userId: note.userId })
+			.getMany()
+			.then(async followings => {
+				const blockings = await Blockings.findBy({ blockerId: user.id });
+				const followers = followings.map(f => f.followerId);
+				for (const antenna of (await getAntennas())) {
+					if (blockings.some(blocking => blocking.blockeeId === antenna.userId)) continue; // この処理は checkHitAntenna 内でやるようにしてもいいかも
+					checkHitAntenna(antenna, note, user, followers).then(hit => {
+						if (hit) {
+							addNoteToAntenna(antenna, note, user);
+						}
+					});
+				}
+			});
 	}
 
 	// Channel
@@ -423,7 +462,14 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		if (Users.isLocalUser(user)) {
 			(async () => {
 				const noteActivity = await renderNoteOrRenoteActivity(data, note);
+
+				// Skip deliver if local only notes
+				if (noteActivity === null) {
+					return;
+				}
+
 				const dm = new DeliverManager(user, noteActivity);
+				const retryable = false;
 
 				// メンションされたリモートユーザーに配送
 				for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
@@ -448,7 +494,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 				}
 
 				if (['public'].includes(note.visibility)) {
-					deliverToRelays(user, noteActivity);
+					deliverToRelays(user, noteActivity, retryable);
 				}
 
 				dm.execute();

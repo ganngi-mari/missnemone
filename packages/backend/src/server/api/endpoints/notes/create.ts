@@ -77,6 +77,12 @@ export const meta = {
 			code: 'YOU_HAVE_BEEN_BLOCKED',
 			id: 'b390d7e1-8a5e-46ed-b625-06271cafd3d3',
 		},
+
+		cannotRenoteDueToVisibility: {
+			message: 'You can not Renote due to target visibility.',
+			code: 'CANNOT_RENOTE_DUE_TO_VISIBILITY',
+			id: 'be9529e9-fe72-4de0-ae43-0b363c4938af',
+		},
 	},
 } as const;
 
@@ -189,7 +195,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 		if (renote == null) {
 			throw new ApiError(meta.errors.noSuchRenoteTarget);
-		} else if (renote.renoteId && !renote.text && !renote.fileIds && !renote.hasPoll) {
+		} else if (renote.renoteId && !renote.text && renote.fileIds.length === 0 && !renote.hasPoll) {
 			throw new ApiError(meta.errors.cannotReRenote);
 		}
 
@@ -203,6 +209,15 @@ export default define(meta, paramDef, async (ps, user) => {
 				throw new ApiError(meta.errors.youHaveBeenBlocked);
 			}
 		}
+
+		// Renote visibility Check
+		if (renote.visibility === 'followers' && renote.userId !== user.id) {
+			// 他人のfollowers noteはreject
+			throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+		} else if (renote.visibility === 'specified') {
+			// specified / direct noteはreject
+			throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+		}
 	}
 
 	let reply: Note | null = null;
@@ -212,7 +227,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 		if (reply == null) {
 			throw new ApiError(meta.errors.noSuchReplyTarget);
-		} else if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
+		} else if (reply.renoteId && !reply.text && reply.fileIds.length === 0 && !reply.hasPoll) {
 			throw new ApiError(meta.errors.cannotReplyToPureRenote);
 		}
 

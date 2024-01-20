@@ -1,15 +1,15 @@
 import { VNode, defineComponent, h } from 'vue';
 import * as mfm from 'mfm-js';
-import MkUrl from '@/components/global/url.vue';
-import MkLink from '@/components/link.vue';
-import MkMention from '@/components/mention.vue';
-import MkEmoji from '@/components/global/emoji.vue';
+import MkUrl from '@/components/global/MkUrl.vue';
+import MkLink from '@/components/MkLink.vue';
+import MkMention from '@/components/MkMention.vue';
+import MkEmoji from '@/components/global/MkEmoji.vue';
 import { concat } from '@/scripts/array';
-import MkFormula from '@/components/formula.vue';
-import MkCode from '@/components/code.vue';
-import MkGoogle from '@/components/google.vue';
-import MkSparkle from '@/components/sparkle.vue';
-import MkA from '@/components/global/a.vue';
+import MkFormula from '@/components/MkFormula.vue';
+import MkCode from '@/components/MkCode.vue';
+import MkGoogle from '@/components/MkGoogle.vue';
+import MkSparkle from '@/components/MkSparkle.vue';
+import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
 
@@ -92,7 +92,7 @@ export default defineComponent({
 					switch (token.props.name) {
 						case 'tada': {
 							const speed = validTime(token.props.args.speed) || '1s';
-							style = 'font-size: 150%;' + (this.$store.state.animatedMfm ? `animation: tada ${speed} linear infinite both;` : '');
+							style = (this.$store.state.enableMfm ?　`font-size: 150%;` : '') + (this.$store.state.animatedMfm ? `animation: tada ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'jelly': {
@@ -138,23 +138,38 @@ export default defineComponent({
 								(token.props.args.h && token.props.args.v) ? 'scale(-1, -1)' :
 								token.props.args.v ? 'scaleY(-1)' :
 								'scaleX(-1)';
-							style = `transform: ${transform};`;
+							style = this.$store.state.enableMfm ? `transform: ${transform};` : '';
 							break;
 						}
 						case 'x2': {
-							return h('span', {
-								class: 'mfm-x2',
-							}, genEl(token.children));
+							if (this.$store.state.enableMfm) {
+								return h('span', {
+									class: 'mfm-x2',
+								}, genEl(token.children));
+							} else {
+								return h('span', {
+								}, genEl(token.children));
+							}
 						}
 						case 'x3': {
-							return h('span', {
-								class: 'mfm-x3',
-							}, genEl(token.children));
+							if (this.$store.state.enableMfm) {
+								return h('span', {
+									class: 'mfm-x3',
+								}, genEl(token.children));
+							} else {
+								return h('span', {
+								}, genEl(token.children));
+							}
 						}
 						case 'x4': {
-							return h('span', {
-								class: 'mfm-x4',
-							}, genEl(token.children));
+							if (this.$store.state.enableMfm) {
+								return h('span', {
+									class: 'mfm-x4',
+								}, genEl(token.children));
+							} else {
+								return h('span', {
+								}, genEl(token.children));
+							}
 						}
 						case 'font': {
 							const family =
@@ -165,13 +180,18 @@ export default defineComponent({
 								token.props.args.emoji ? 'emoji' :
 								token.props.args.math ? 'math' :
 								null;
-							if (family) style = `font-family: ${family};`;
+							if (family) style = this.$store.state.enableMfm ? `font-family: ${family};` : '';
 							break;
 						}
 						case 'blur': {
-							return h('span', {
-								class: '_mfm_blur_',
-							}, genEl(token.children));
+							if (this.$store.state.enableMfm) {
+								return h('span', {
+									class: '_mfm_blur_',
+								}, genEl(token.children));
+							} else {
+								return h('span', {
+								}, genEl(token.children));
+							}
 						}
 						case 'rainbow': {
 							const speed = validTime(token.props.args.speed) || '1s';
@@ -186,7 +206,7 @@ export default defineComponent({
 						}
 						case 'rotate': {
 							const degrees = parseInt(token.props.args.deg) || '90';
-							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
+							style = this.$store.state.enableMfm ? `transform: rotate(${degrees}deg); transform-origin: center center;` : '';
 							break;
 						}
 					}

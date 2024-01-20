@@ -1,5 +1,5 @@
 <template>
-<div v-size="{ max: [450] }" class="wrpstxzv" :class="{ children: depth > 1 }">
+<div v-if="!muted" v-size="{ max: [450] }" class="wrpstxzv" :class="{ children: depth > 1 }">
 	<div class="main">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<div class="body">
@@ -10,7 +10,7 @@
 					<XCwButton v-model="showContent" :note="note"/>
 				</p>
 				<div v-show="note.cw == null || showContent" class="content">
-					<MkNoteSubNoteContent class="text" :note="note"/>
+					<MkSubNoteContent class="text" :note="note"/>
 				</div>
 			</div>
 		</div>
@@ -22,17 +22,30 @@
 		<MkA class="text _link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="fas fa-angle-double-right"></i></MkA>
 	</div>
 </div>
+<div v-else class="muted" @click="muted = false">
+	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+		<template #name>
+			<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
+				<MkUserName :user="note.user"/>
+			</MkA>
+		</template>
+	</I18n>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as misskey from 'misskey-js';
-import XNoteHeader from './note-header.vue';
-import MkNoteSubNoteContent from './sub-note-content.vue';
-import XCwButton from './cw-button.vue';
+import XNoteHeader from '@/components/MkNoteHeader.vue';
+import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
+import XCwButton from '@/components/MkCwButton.vue';
 import { notePage } from '@/filters/note';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { userPage } from "@/filters/user";
+import { checkWordMute } from "@/scripts/check-word-mute";
+import { defaultStore } from "@/store";
+import { $i } from '@/account';
 
 const props = withDefaults(defineProps<{
 	note: misskey.entities.Note;
@@ -126,5 +139,11 @@ if (props.detail) {
 	> .more {
 		padding: 10px 0 0 16px;
 	}
+}
+
+.muted {
+	padding: 8px;
+	text-align: center;
+	opacity: 0.7;
 }
 </style>

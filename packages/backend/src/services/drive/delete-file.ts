@@ -1,13 +1,32 @@
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { InternalStorage } from './internal-storage.js';
-import { DriveFiles, Instances } from '@/models/index.js';
+import { DriveFiles, Instances, Emojis } from '@/models/index.js';
 import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index.js';
 import { createDeleteObjectStorageFileJob } from '@/queue/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { getS3 } from './s3.js';
 import { v4 as uuid } from 'uuid';
+import { IsNull } from 'typeorm';
 
 export async function deleteFile(file: DriveFile, isExpired = false) {
+	if (file.webpublicUrl != null) {
+		let emojis = await Emojis.findOneBy({
+			host: IsNull(),
+			publicUrl: file.webpublicUrl,
+		});
+		if (emojis != null) {
+			return; // emojiのpublicUrlがfileに含まれている場合は処理をスキップ
+		}
+	} else if (file.url != null) {
+		let emojis = await Emojis.findOneBy({
+			host: IsNull(),
+			publicUrl: file.url,
+		});
+		if (emojis != null) {
+			return; // emojiのpublicUrlがfileに含まれている場合は処理をスキップ
+		}
+	}
+
 	if (file.storedInternal) {
 		InternalStorage.del(file.accessKey!);
 
@@ -34,6 +53,24 @@ export async function deleteFile(file: DriveFile, isExpired = false) {
 }
 
 export async function deleteFileSync(file: DriveFile, isExpired = false) {
+	if (file.webpublicUrl != null) {
+		let emojis = await Emojis.findOneBy({
+			host: IsNull(),
+			publicUrl: file.webpublicUrl,
+		});
+		if (emojis != null) {
+			return; // emojiのpublicUrlがfileに含まれている場合は処理をスキップ
+		}
+	} else if (file.url != null) {
+		let emojis = await Emojis.findOneBy({
+			host: IsNull(),
+			publicUrl: file.url,
+		});
+		if (emojis != null) {
+			return; // emojiのpublicUrlがfileに含まれている場合は処理をスキップ
+		}
+	}
+
 	if (file.storedInternal) {
 		InternalStorage.del(file.accessKey!);
 

@@ -17,6 +17,7 @@ import { LdSignature } from '@/remote/activitypub/misc/ld-signature.js';
 import { StatusError } from '@/misc/fetch.js';
 import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { UserPublickey } from '@/models/entities/user-publickey.js';
+import { verifySignature } from '@/remote/activitypub/check-fetch.js';
 
 const logger = new Logger('inbox');
 
@@ -35,7 +36,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 
 	// ブロックしてたら中断
 	const meta = await fetchMeta();
-	if (meta.blockedHosts.includes(host)) {
+	if (meta.blockedHosts.some(x => host.endsWith(x))) {
 		return `Blocked request: ${host}`;
 	}
 
@@ -80,6 +81,10 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 	// HTTP-Signatureの検証
 	const httpSignatureValidated = httpSignature.verifySignature(signature, authUser.key.keyPem);
 
+	if (httpSignatureValidated) {
+		if (!verifySignature(signature, authUser.key)) return `skip: Invalid HTTP signature`;
+	}
+
 	// また、signatureのsignerは、activity.actorと一致する必要がある
 	if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {
 		// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
@@ -119,7 +124,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 
 			// ブロックしてたら中断
 			const ldHost = extractDbHost(authUser.user.uri);
-			if (meta.blockedHosts.includes(ldHost)) {
+			if (meta.blockedHosts.some(x => ldHost.endsWith(x))) {
 				return `Blocked request: ${ldHost}`;
 			}
 		} else {
@@ -142,7 +147,10 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 			latestRequestReceivedAt: new Date(),
 			lastCommunicatedAt: new Date(),
 			isNotResponding: false,
+			isSuspended: false,
 		});
+
+		// 配送を停止していてもアクティビティ受信したら配送再開する
 
 		fetchInstanceMetadata(i);
 

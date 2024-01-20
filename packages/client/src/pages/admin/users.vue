@@ -21,6 +21,8 @@
 							<option value="moderator">{{ i18n.ts.moderator }}</option>
 							<option value="silenced">{{ i18n.ts.silence }}</option>
 							<option value="suspended">{{ i18n.ts.suspend }}</option>
+							<option value="bot">{{ i18n.ts.bot }}</option>
+							<option value="deleted">{{ i18n.ts.deleted }}</option>
 						</MkSelect>
 						<MkSelect v-model="origin" style="flex: 1;">
 							<template #label>{{ i18n.ts.instance }}</template>
@@ -57,12 +59,12 @@ import { computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import MkUserCardMini from '@/components/user-card-mini.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 let paginationComponent = $ref<InstanceType<typeof MkPagination>>();
 
@@ -154,7 +156,7 @@ definePageMetadata(computed(() => ({
 				}
 			}
 		}
-	
+
 		> .users {
 			margin-top: var(--margin);
 			display: grid;

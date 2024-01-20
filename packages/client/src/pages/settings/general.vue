@@ -41,6 +41,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.appearance }}</template>
 		<FormSwitch v-model="disableAnimatedMfm" class="_formBlock">{{ i18n.ts.disableAnimatedMfm }}</FormSwitch>
+		<FormSwitch v-model="enableMfm" class="_formBlock">{{ i18n.ts.enableMfm }}</FormSwitch>
 		<FormSwitch v-model="reduceAnimation" class="_formBlock">{{ i18n.ts.reduceUiAnimation }}</FormSwitch>
 		<FormSwitch v-model="useBlurEffect" class="_formBlock">{{ i18n.ts.useBlurEffect }}</FormSwitch>
 		<FormSwitch v-model="useBlurEffectForModal" class="_formBlock">{{ i18n.ts.useBlurEffectForModal }}</FormSwitch>
@@ -96,7 +97,7 @@
 		<option value="window">{{ i18n.ts.openInWindow }}</option>
 	</FormSelect>
 
-	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" class="_formBlock">
+	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing class="_formBlock">
 		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 	</FormRange>
@@ -104,6 +105,8 @@
 	<FormLink to="/settings/deck" class="_formBlock">{{ i18n.ts.deck }}</FormLink>
 
 	<FormLink to="/settings/custom-css" class="_formBlock"><template #icon><i class="fas fa-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
+
+	<FormLink to="/settings/timeline" class="_formBlock"><template #icon><i class="fas fa-list"></i></template>{{ i18n.ts.timeline }}</FormLink>
 </div>
 </template>
 
@@ -115,7 +118,7 @@ import FormRadios from '@/components/form/radios.vue';
 import FormRange from '@/components/form/range.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
-import MkLink from '@/components/link.vue';
+import MkLink from '@/components/MkLink.vue';
 import { langs } from '@/config';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
@@ -160,6 +163,7 @@ const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
 const windowSize = computed(defaultStore.makeGetterSetter('windowSize'));
+const enableMfm = computed(defaultStore.makeGetterSetter('enableMfm'));
 
 watch(lang, () => {
 	localStorage.setItem('lang', lang.value as string);

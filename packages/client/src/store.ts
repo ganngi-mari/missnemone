@@ -53,7 +53,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactions: {
 		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '🥴', '😇', '🍮'],
 	},
 	mutedWords: {
 		where: 'account',
@@ -165,11 +165,11 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	useBlurEffectForModal: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	useBlurEffect: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	showFixedPostForm: {
 		where: 'device',
@@ -259,6 +259,34 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	enableMTL: {
+		where: 'device',
+		default: false,
+	},
+	enableLTL: {
+		where: 'device',
+		default: true,
+	},
+	enableGTL: {
+		where: 'device',
+		default: true,
+	},
+	enablePTL: {
+		where: 'device',
+		default: false,
+	},
+	enableLimitedTL: {
+		where: 'device',
+		default: false,
+	},
+	enableMfm: {
+		where: 'device',
+		default: true
+	},
+	enableSudo: {
+		where: 'device',
+		default: false
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
@@ -284,10 +312,12 @@ export class ColdDeviceStorage {
 	public static default = {
 		lightTheme,
 		darkTheme,
-		syncDeviceDarkMode: true,
+		syncDeviceDarkMode: false,
 		plugins: [] as Plugin[],
-		mediaVolume: 0.5,
-		sound_masterVolume: 0.3,
+		mediaVolume: 0,
+		sound_masterVolume: 0,
+		sound_notUseSound: false,
+		sound_useSoundOnlyWhenActive: false,
 		sound_note: { type: 'syuilo/down', volume: 1 },
 		sound_noteMy: { type: 'syuilo/up', volume: 1 },
 		sound_notification: { type: 'syuilo/pope2', volume: 1 },

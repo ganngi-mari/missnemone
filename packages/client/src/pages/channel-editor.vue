@@ -20,6 +20,7 @@
 			</div>
 			<div class="_formBlock">
 				<MkButton primary @click="save()"><i class="fas fa-save"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
+				<MkButton v-if="channelId" danger @click="removechannel()"><i class="fas fa-trash-alt"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>
@@ -29,7 +30,7 @@
 <script lang="ts" setup>
 import { computed, inject, watch } from 'vue';
 import MkTextarea from '@/components/form/textarea.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
@@ -92,6 +93,24 @@ function save() {
 			router.push(`/channels/${created.id}`);
 		});
 	}
+}
+
+async function removechannel() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: name }),
+	});
+	if (canceled) return;
+	const params = {
+		name: name,
+		description: description,
+		bannerId: bannerId,
+	};
+	params.channelId = props.channelId;
+	await os.api('channels/delete', params).then(() => {
+		os.success();
+		router.push('/channels');
+	});
 }
 
 function setBannerImage(evt) {

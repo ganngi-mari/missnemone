@@ -4,6 +4,7 @@ import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
 import * as ep___admin_accounts_delete from './endpoints/admin/accounts/delete.js';
+import * as ep___admin_accounts_findByEmail from './endpoints/admin/accounts/find-by-email.js';
 import * as ep___admin_ad_create from './endpoints/admin/ad/create.js';
 import * as ep___admin_ad_delete from './endpoints/admin/ad/delete.js';
 import * as ep___admin_ad_list from './endpoints/admin/ad/list.js';
@@ -13,6 +14,7 @@ import * as ep___admin_announcements_delete from './endpoints/admin/announcement
 import * as ep___admin_announcements_list from './endpoints/admin/announcements/list.js';
 import * as ep___admin_announcements_update from './endpoints/admin/announcements/update.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
+import * as ep___admin_deleteInstanceUsers from './endpoints/admin/delete-instance-users.js';
 import * as ep___admin_drive_cleanRemoteFiles from './endpoints/admin/drive/clean-remote-files.js';
 import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
 import * as ep___admin_drive_files from './endpoints/admin/drive/files.js';
@@ -47,9 +49,11 @@ import * as ep___admin_queue_stats from './endpoints/admin/queue/stats.js';
 import * as ep___admin_relays_add from './endpoints/admin/relays/add.js';
 import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
 import * as ep___admin_relays_remove from './endpoints/admin/relays/remove.js';
+import * as ep___admin_reset2fa from './endpoints/admin/reset-2fa.js';
 import * as ep___admin_resetPassword from './endpoints/admin/reset-password.js';
 import * as ep___admin_resolveAbuseUserReport from './endpoints/admin/resolve-abuse-user-report.js';
 import * as ep___admin_sendEmail from './endpoints/admin/send-email.js';
+import * as ep___admin_sendNotification from './endpoints/admin/send-notification.js';
 import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
 import * as ep___admin_showModerationLogs from './endpoints/admin/show-moderation-logs.js';
 import * as ep___admin_showUser from './endpoints/admin/show-user.js';
@@ -81,6 +85,7 @@ import * as ep___blocking_create from './endpoints/blocking/create.js';
 import * as ep___blocking_delete from './endpoints/blocking/delete.js';
 import * as ep___blocking_list from './endpoints/blocking/list.js';
 import * as ep___channels_create from './endpoints/channels/create.js';
+import * as ep___channels_delete from './endpoints/channels/delete.js';
 import * as ep___channels_featured from './endpoints/channels/featured.js';
 import * as ep___channels_follow from './endpoints/channels/follow.js';
 import * as ep___channels_followed from './endpoints/channels/followed.js';
@@ -235,6 +240,9 @@ import * as ep___notes_featured from './endpoints/notes/featured.js';
 import * as ep___notes_globalTimeline from './endpoints/notes/global-timeline.js';
 import * as ep___notes_hybridTimeline from './endpoints/notes/hybrid-timeline.js';
 import * as ep___notes_localTimeline from './endpoints/notes/local-timeline.js';
+import * as ep___notes_limitedTimeline from './endpoints/notes/limited-timeline.js';
+import * as ep___notes_mediaTimeline from './endpoints/notes/media-timeline.js';
+import * as ep___notes_personalTimeline from './endpoints/notes/personal-timeline.js';
 import * as ep___notes_mentions from './endpoints/notes/mentions.js';
 import * as ep___notes_polls_recommendation from './endpoints/notes/polls/recommendation.js';
 import * as ep___notes_polls_vote from './endpoints/notes/polls/vote.js';
@@ -321,6 +329,7 @@ const eps = [
 	['admin/abuse-user-reports', ep___admin_abuseUserReports],
 	['admin/accounts/create', ep___admin_accounts_create],
 	['admin/accounts/delete', ep___admin_accounts_delete],
+	['admin/accounts/find-by-email', ep___admin_accounts_findByEmail],
 	['admin/ad/create', ep___admin_ad_create],
 	['admin/ad/delete', ep___admin_ad_delete],
 	['admin/ad/list', ep___admin_ad_list],
@@ -330,6 +339,7 @@ const eps = [
 	['admin/announcements/list', ep___admin_announcements_list],
 	['admin/announcements/update', ep___admin_announcements_update],
 	['admin/delete-all-files-of-a-user', ep___admin_deleteAllFilesOfAUser],
+	['admin/delete-instance-users', ep___admin_deleteInstanceUsers],
 	['admin/drive/clean-remote-files', ep___admin_drive_cleanRemoteFiles],
 	['admin/drive/cleanup', ep___admin_drive_cleanup],
 	['admin/drive/files', ep___admin_drive_files],
@@ -364,9 +374,11 @@ const eps = [
 	['admin/relays/add', ep___admin_relays_add],
 	['admin/relays/list', ep___admin_relays_list],
 	['admin/relays/remove', ep___admin_relays_remove],
+	['admin/reset-2fa', ep___admin_reset2fa],
 	['admin/reset-password', ep___admin_resetPassword],
 	['admin/resolve-abuse-user-report', ep___admin_resolveAbuseUserReport],
 	['admin/send-email', ep___admin_sendEmail],
+	['admin/send-notification', ep___admin_sendNotification],
 	['admin/server-info', ep___admin_serverInfo],
 	['admin/show-moderation-logs', ep___admin_showModerationLogs],
 	['admin/show-user', ep___admin_showUser],
@@ -398,6 +410,7 @@ const eps = [
 	['blocking/delete', ep___blocking_delete],
 	['blocking/list', ep___blocking_list],
 	['channels/create', ep___channels_create],
+	['channels/delete', ep___channels_delete],
 	['channels/featured', ep___channels_featured],
 	['channels/follow', ep___channels_follow],
 	['channels/followed', ep___channels_followed],
@@ -552,6 +565,9 @@ const eps = [
 	['notes/global-timeline', ep___notes_globalTimeline],
 	['notes/hybrid-timeline', ep___notes_hybridTimeline],
 	['notes/local-timeline', ep___notes_localTimeline],
+	['notes/limited-timeline', ep___notes_limitedTimeline],
+	['notes/media-timeline', ep___notes_mediaTimeline],
+	['notes/personal-timeline', ep___notes_personalTimeline],
 	['notes/mentions', ep___notes_mentions],
 	['notes/polls/recommendation', ep___notes_polls_recommendation],
 	['notes/polls/vote', ep___notes_polls_vote],
